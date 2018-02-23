@@ -19,8 +19,10 @@
 		methods: {
 			sendMessage() {
 				this.$emit('messagesent', { 
-					message: this.newMessage,
-					author: 'John Doe'
+					body: this.newMessage,
+					user: {
+						name: 'John Doe'
+					}
 				});
 
 				this.newMessage = '';

@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<p>{{ message.message }}</p>
-		<small>{{ message.author }}</small>
+		<p>{{ message.body }}</p>
+		<small>{{ message.user.name }}</small>
 	</div>
 </template>
 	
