@@ -23,20 +23,37 @@ const app = new Vue({
     el: '#root',
 
     data: {
-    	messages: []
+    	messages: [],
+        onlineUsers: []
     },
 
     methods: {
     	addMessage(message) {
     		this.messages.push(message);
 
-            axios.post('/messages', message)
-                .then(response => console.log(response));
+            axios.post('/messages', message);
     	}
     },
 
     created() {
     	axios.get('/messages')
     		.then(response => this.messages = response.data);
+
+        Echo.join('chatroom')
+            .here(users => {
+                this.onlineUsers = users;
+            })
+            .joining(user => {
+                this.onlineUsers.push(user);
+            })
+            .leaving(user => {
+                this.onlineUsers = this.onlineUsers.filter(u => u !== user) 
+            })
+            .listen('MessagePosted', (e) => {
+                this.messages.push({
+                    body: e.message.body,
+                    user: e.user
+                })
+            });
     }
 });

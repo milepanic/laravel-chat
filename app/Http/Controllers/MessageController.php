@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessagePosted;
 use App\Message;
 use App\User;
 use Illuminate\Http\Request;
@@ -37,11 +38,14 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::user()
+        // add validation
+        $message = Auth::user()
             ->messages()
             ->create([
                 'body' => $request->body
             ]);
+
+        broadcast(new MessagePosted($message, Auth::user()))->toOthers();
 
         return response('Success', 201);
     }
@@ -55,9 +59,10 @@ class MessageController extends Controller
     public function show()
     {
         // produziti sa drugim korisnikom...
-        $messages = Message::where('user_id', Auth::id())
-            ->with('user')
-            ->get();
+        // napraviti mozda chatroom controller
+        // $messages = Message::where('user_id', Auth::id())
+        $messages = Message::with('user')->get();
+            // ->get();
 
         return $messages;
     }
