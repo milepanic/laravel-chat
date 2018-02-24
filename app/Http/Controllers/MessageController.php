@@ -15,19 +15,20 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        return view('chat');
-    }
+        $messages = Message::where([
+                ['user_id', Auth::id()],
+                ['reciever_id', $id]
+            ])
+            ->orWhere([
+                ['user_id', $id],
+                ['reciever_id', Auth::id()]  
+            ])
+            ->with('user')
+            ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return request()->ajax() ? $messages : view('chat');
     }
 
     /**
@@ -42,62 +43,14 @@ class MessageController extends Controller
         $message = Auth::user()
             ->messages()
             ->create([
-                'body' => $request->body
+                'body'         => $request->body,
+                'reciever_id'  => $request->reciever
             ]);
 
-        broadcast(new MessagePosted($message, Auth::user()))->toOthers();
+        broadcast(new MessagePosted($message, Auth::user()))
+            ->toOthers();
 
         return response('Success', 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function show()
-    {
-        // produziti sa drugim korisnikom...
-        // napraviti mozda chatroom controller
-        // $messages = Message::where('user_id', Auth::id())
-        $messages = Message::with('user')->get();
-            // ->get();
-
-        return $messages;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Message $message)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Message $message)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Message $message)
-    {
-        //
-    }
 }

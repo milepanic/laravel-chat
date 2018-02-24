@@ -10,6 +10,8 @@
 	
 <script>
 	export default {
+		props: ['user', 'reciever'],
+
 		data() {
 			return {
 				newMessage: ''
@@ -21,8 +23,9 @@
 				this.$emit('messagesent', { 
 					body: this.newMessage,
 					user: {
-						name: 'John Doe'
-					}
+						name: this.user.name
+					},
+					reciever: this.reciever
 				});
 
 				this.newMessage = '';

@@ -1,0 +1,5 @@
+ ☐ URL prebaciti iz id u slug
+ ☐ Verifikacija
+ ☐ Organizacija ruta i kontrolera
+ ☐ Napraviti reciever_id -> mozda napraviti glavni child component
+ ☐ Izmijeniti onlineUsers[]

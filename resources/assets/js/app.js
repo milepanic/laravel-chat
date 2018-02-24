@@ -18,12 +18,15 @@ window.Vue = require('vue');
 Vue.component('chat-message', require('./components/ChatMessage.vue'));
 Vue.component('chat-log', require('./components/ChatLog.vue'));
 Vue.component('chat-composer', require('./components/ChatComposer.vue'));
+Vue.component('users-avaiable', require('./components/UsersAvaiable.vue'));
+
 
 const app = new Vue({
     el: '#root',
 
     data: {
     	messages: [],
+        user: [],
         onlineUsers: []
     },
 
@@ -36,7 +39,7 @@ const app = new Vue({
     },
 
     created() {
-    	axios.get('/messages')
+    	axios.get('/chat/3')
     		.then(response => this.messages = response.data);
 
         Echo.join('chatroom')
